@@ -1,1 +1,44 @@
 
+SEC Cancels Crypto Rulemaking Meeting as Both Regulatory and Legislative Paths Stall 
+
+
+The U.S. Securities and Exchange Commission has abruptly canceled an open meeting scheduled for Friday morning at which its three commissioners were due to vote on proposing the agency's first crypto-specific rules, dealing a setback to an industry that has spent years seeking regulatory clarity. The cancellation, announced on August 15, 2026, comes just days after the Senate departed for a five-week recess without advancing the Clarity Act, leaving both administrative and legislative routes to crypto regulation in limbo.
+
+The Cancellation
+
+The formal notice, issued under the Sunshine Act and signed by SEC secretary Vanessa Countryman, records only that the meeting "has been cancelled," making no mention of a new date. A spokesperson separately told reporters the s
+session would move to a later date "due to an unforeseen scheduling issue," without elaborating.
+
+The commission had dated its original notice August 10, giving roughly three business days' warning, with a single item on the agenda. The commissioners had been due to decide whether to publish for comment a set of exemptions letting crypto startups raise capital without complying with traditional securities offering rules, an escape hatch from registration that founders have sought for years.
+
+A vote would not have created anything binding, only opened a proposal to public comment. But it would have marked the first time the agency attempted crypto-specific rulemaking rather than applying existing securities law.
+Regulation Crypto What Was on the Table
+
+The postponed rules, part of an initiative known as "Regulation Crypto," were viewed as the SEC's first major rulemaking attempt in the digital asset space. The framework was expected to provide limited exemptions for crypto securities offerings, allowing issuers to advance projects without triggering full registration requirements, with a path to gradually exit SEC regulatory oversight.
+
+SEC Chairman Paul Atkins had previously described the rulemaking as a core component of the agency's digital asset regulatory agenda. In March, Atkins set out broad guidance saying a safe harbor could cover startups worth up to $5 million experimenting with crypto in their first four years, entrepreneurs raising up to $75 million through investment contracts, and tokens whose creators have ceased all essential managerial efforts.
+
+A separate "innovation exemption," still in progress, would let firms experiment with blockchain-based stocks and similar products without meeting every SEC disclosure requirement. Industry sources told CoinDesk the postponement of that exemption may be connected to active congressional discussions surrounding the Clarity Act.
+Clarity Act Stalls in Senate
+
+The SEC's cancellation follows the Senate's departure on Saturday for a five-week recess without advancing the Digital Asset Market Clarity Act, the industry's top legislative priority. The bill's next procedural test is not expected until September, and its prospects for this year remain thin.
+
+Traders on Myriad, a prediction market, put the chances of the Clarity Act being signed into law in 2026 at just 20%. The legislation, if passed, would create new federal rules tailored to cryptocurrencies and put companies on a more sound legal footing, lobbyists say.
+
+The bill has encountered multiple setbacks due to resistance from banking industry representatives and consumer protection organizations. Two-party negotiations with the White House have yet to reach consensus on crossing the 60-vote threshold in the Senate.
+Both Routes Now Stalled
+
+With both regulatory and legislative paths stalled, crypto companies face continued uncertainty about the legal status of their operations. The SEC's rulemaking was widely read as the agency moving to fill the gap left when the Senate failed to act on the Clarity Act. But with the meeting postponed indefinitely, the industry is left with neither a legislative solution nor an administrative one.
+
+The development comes despite a broader shift in SEC policy under the Trump administration. Under Atkins, the agency has reversed course from its previous Democratic leadership, which had sued multiple crypto companies alleging their tokens were effectively securities. The SEC moved swiftly in 2025 to rescind stringent crypto accounting guidance and dismiss lawsuits against Coinbase, Binance and others.
+CFTC Continues Its Own Path
+
+While the SEC has stalled, the Commodity Futures Trading Commission is still proceeding with its own initiative. The CFTC will hold an inaugural meeting of its Innovation Advisory Committee on August 20, with an agenda opening with a session titled "Crypto's Regulatory Evolution From Uncertainty to Clarity". The committee also plans to cover artificial intelligence and prediction market regulations. However, the CFTC's committee is advisory in nature and produces recommendations rather than binding rules.
+Market Impact
+
+The news of the SEC's postponement rippled through crypto markets. Concept stocks including Bullish, Coinbase, and the UNI token dropped following the announcement. Bitcoin traded slightly under $63,000 on Saturday, with the regulatory uncertainty adding to broader selling pressure that has kept the cryptocurrency range-bound throughout August.
+
+The SEC's decision to postpone the tokenized securities "innovation exemption" dampened market optimism, according to analysts. Concerns from both the White House and major financial institutions regarding the proposal's regulatory foundation prompted the delay.
+
+
+
