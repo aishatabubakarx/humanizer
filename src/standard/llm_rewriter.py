@@ -1,85 +1,42 @@
-"""LLM humanization rewriter (OpenAI-compatible providers).
+from src.standard.llm_client import LLMClient
 
-Supports DeepSeek, OpenRouter, and any compatible endpoint via config.
-Carries previous round history for context-aware rewriting.
-"""
+class LLMRewriter:
+    def __init__(self, api_key: str = None):
+        self.client = LLMClient(api_key=api_key)
 
-from .llm_client import chat_completions
+    def rewrite(self, text: str, temperature: float = 0.9) -> str:
+        """
+        First pass: Restructure and break rigid AI writing patterns.
+        """
+        prompt = (
+            "Rewrite the following text so it reads naturally, flows smoothly, "
+            "and eliminates robotic AI patterns while keeping the exact core meaning intact:\n\n"
+            f"{text}"
+        )
+        return self.client.generate(prompt, temperature=temperature)
 
-SYSTEM_PROMPT = "你是一个专业的文案改写专家,精通多语言本地化。"
+    def polish(self, text: str, temperature: float = 0.7) -> str:
+        """
+        Second pass: Fine-tune tone and sentence rhythm.
+        """
+        prompt = (
+            "Polish this text as an experienced human editor. Improve the rhythm, "
+            "mix short and long sentences, and ensure it sounds completely authentic:\n\n"
+            f"{text}"
+        )
+        return self.client.generate(prompt, temperature=temperature)
 
+    def run(self, text: str) -> str:
+        """
+        Runs the full 2-step humanization pipeline using Gemini.
+        """
+        if not text or not text.strip():
+            return ""
 
-def llm_rewrite(
-    text: str,
-    target_language: str,
-    api_key: str,
-    base_url: str,
-    model: str,
-    history: dict | None = None,
-    temperature: float = 1.3,
-    extra_headers: dict | None = None,
-    provider: str | None = None,
-) -> str:
-    """Rewrite text into target language with humanization.
+        # Step 1: Restructure
+        first_pass = self.rewrite(text, temperature=0.9)
+        
+        # Step 2: Polish
+        final_pass = self.polish(first_pass, temperature=0.7)
 
-    Args:
-        text: Input text to rewrite.
-        target_language: Target language name (e.g., "中文", "日语").
-        api_key: LLM provider API key.
-        base_url: Provider base URL (OpenAI-compatible).
-        model: Model name / slug.
-        history: Optional dict with 'input' and 'output' from previous round.
-        temperature: Sampling temperature (1.3 recommended for humanization).
-        extra_headers: Optional extra HTTP headers (e.g. OpenRouter attribution).
-
-    Returns:
-        Humanized text in target language.
-    """
-    user_prompt = f"翻译为{target_language}，去掉 AI 味道，拟人化改写，只输出结果：\n{text}"
-
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-
-    if history:
-        messages.append({
-            "role": "user",
-            "content": f"翻译为{target_language}，去掉 AI 味道，拟人化改写，只输出结果：\n{history['input']}",
-        })
-        messages.append({
-            "role": "assistant",
-            "content": history["output"],
-        })
-
-    messages.append({"role": "user", "content": user_prompt})
-
-    return chat_completions(
-        messages,
-        api_key=api_key,
-        base_url=base_url,
-        model=model,
-        temperature=temperature,
-        extra_headers=extra_headers,
-        provider=provider,
-    )
-
-
-def deepseek_rewrite(
-    text: str,
-    target_language: str,
-    api_key: str,
-    history: dict | None = None,
-    model: str = "deepseek-chat",
-    temperature: float = 1.3,
-    base_url: str = "https://api.deepseek.com",
-    extra_headers: dict | None = None,
-) -> str:
-    """Backward-compatible alias for direct DeepSeek usage."""
-    return llm_rewrite(
-        text=text,
-        target_language=target_language,
-        api_key=api_key,
-        base_url=base_url,
-        model=model,
-        history=history,
-        temperature=temperature,
-        extra_headers=extra_headers,
-    )
+        return final_pass
