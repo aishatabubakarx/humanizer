@@ -1,0 +1,37 @@
+name: Auto Humanize Text
+
+on:
+  push:
+    paths:
+      - 'input.txt' # Triggers only when input.txt is edited
+  workflow_dispatch: # Allows manual triggering from the Actions tab
+
+jobs:
+  humanize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install google-genai
+
+      - name: Run Humanize Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python humanize.py
+
+      - name: Commit and Push Output
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add output.txt
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-humanized text" && git push)
