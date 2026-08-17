@@ -11,4 +11,4 @@ step4_source = "fi"
 step4_target = "en"
 
 [azure]
-region = "eastus"
+region = "global"
