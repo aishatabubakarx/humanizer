@@ -5,7 +5,7 @@ import httpx
 from deep_translator import GoogleTranslator
 
 
-def google_translate(text: str, source: str, target: str) -> str:
+def google_translate(text: str, source: str = "auto", target: str = "en") -> str:
     """Translate text using Google Translate.
 
     Args:
@@ -16,9 +16,12 @@ def google_translate(text: str, source: str, target: str) -> str:
     Returns:
         Translated text.
     """
+    if not text or not text.strip():
+        return ""
+
     translator = GoogleTranslator(source=source, target=target)
 
-    # Handle long texts by chunking (Google has ~5000 char limit)
+    # Handle long texts by chunking (~5000 char limit)
     if len(text) > 4500:
         chunks = _split_text(text, max_len=4500)
         return " ".join(translator.translate(chunk) for chunk in chunks)
@@ -27,7 +30,7 @@ def google_translate(text: str, source: str, target: str) -> str:
 
 
 def azure_translate(text: str, source: str = "fi", target: str = "en", api_key: str = None) -> str:
-    """Translate text using Azure Translator API.
+    """Translate text using Azure Cognitive Services Translator API.
 
     Args:
         text: Text to translate.
@@ -70,7 +73,7 @@ def azure_translate(text: str, source: str = "fi", target: str = "en", api_key: 
         raise RuntimeError(f"Unexpected Azure Translator response: {data}")
 
 
-# Backward-compatible alias
+# Backward compatibility alias
 niutrans_translate = azure_translate
 
 
