@@ -1,10 +1,10 @@
 """Standard Pipeline (v1.5.1) — production path.
 
 Executes the 4-step humanization chain:
-Step 1: LLM Restructure (Pass 1 - Gemini)
-Step 2: LLM Polish (Pass 2 - Gemini)
-Step 3: Japanese -> Finnish (Google Translate)
-Step 4: Finnish -> English (Azure Translator)
+Step 1: LLM (Gemini) — Input (EN) -> Chinese, humanization translation
+Step 2: LLM (Gemini) — Chinese -> Japanese, humanization translation (with history)
+Step 3: Google Translate — Japanese -> Finnish
+Step 4: Azure Translator — Finnish -> Target language (EN)
 """
 
 import logging
@@ -40,20 +40,21 @@ def run_standard_pipeline(
 
     steps = {}
 
-    # Step 1 & Step 2: Gemini LLM Rewriting Passes
+    # Step 1 & Step 2: Gemini translation + humanization passes
+    # Step 1: English -> Chinese. Step 2: Chinese -> Japanese (carries step 1 as history).
     try:
         step1_out, step2_out = llm_rewrite(
             text,
             client=client,
             model=model,
         )
-        steps["step1_llm_rewrite_1"] = step1_out
-        steps["step2_llm_rewrite_2"] = step2_out
+        steps["step1_en_to_zh"] = step1_out
+        steps["step2_zh_to_ja"] = step2_out
     except Exception as e:
         logger.error(f"Error in LLM rewriting steps: {e}")
         raise e
 
-    # Step 3: Intermediate Translation (Japanese -> Finnish)
+    # Step 3: Google Translate — Japanese -> Finnish
     try:
         step3_out = google_translate(
             text=step2_out,
@@ -65,16 +66,16 @@ def run_standard_pipeline(
         logger.error(f"Error in Step 3 translation (JA -> FI): {e}")
         raise e
 
-    # Step 4: Final Translation (Finnish -> English via Azure)
+    # Step 4: Azure Translator — Finnish -> target language
     try:
         final_out = azure_translate(
             text=step3_out,
             source="fi",
             target=target_lang,
         )
-        steps["step4_fi_to_en"] = final_out
+        steps["step4_fi_to_target"] = final_out
     except Exception as e:
-        logger.error(f"Error in Step 4 translation (FI -> EN via Azure): {e}")
+        logger.error(f"Error in Step 4 translation (FI -> {target_lang.upper()} via Azure): {e}")
         raise e
 
     return {
