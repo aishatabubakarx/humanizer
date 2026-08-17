@@ -1,54 +1,65 @@
 from src.standard.llm_client import LLMClient
 
+SYSTEM_PROMPT = (
+    "You are an expert copywriter and multilingual localization specialist. "
+    "You translate text into the requested language while rewriting it to "
+    "sound completely natural and human, removing any AI-sounding phrasing."
+)
+
+
 class LLMRewriter:
     def __init__(self, api_key: str = None):
         self.client = LLMClient(api_key=api_key)
 
-    def rewrite(self, text: str, temperature: float = 0.9) -> str:
+    def translate_and_humanize(
+        self,
+        text: str,
+        target_language: str,
+        history: dict = None,
+        temperature: float = 1.3,
+    ) -> str:
         """
-        Pass 1: Restructure and break rigid AI writing patterns.
-        """
-        prompt = (
-            "Rewrite the following text so it reads naturally, flows smoothly, "
-            "and eliminates robotic AI patterns while keeping the exact core meaning intact:\n\n"
-            f"{text}"
-        )
-        return self.client.generate(prompt, temperature=temperature)
-
-    def polish(self, text: str, temperature: float = 0.7) -> str:
-        """
-        Pass 2: Fine-tune tone and sentence rhythm.
+        Translate `text` into `target_language`, stripping AI-sounding
+        phrasing and rewriting it the way a human localizer would.
+        Mirrors the original pipeline's Step 1 / Step 2 prompt.
         """
         prompt = (
-            "Polish this text as an experienced human editor. Improve the rhythm, "
-            "mix short and long sentences, and ensure it sounds completely authentic:\n\n"
-            f"{text}"
+            f"翻译为{target_language}，去掉 AI 味道，拟人化改写，只输出结果：\n{text}"
         )
-        return self.client.generate(prompt, temperature=temperature)
+        return self.client.generate(
+            prompt,
+            temperature=temperature,
+            system_instruction=SYSTEM_PROMPT,
+            history=history,
+        )
 
-    def run(self, text: str) -> str:
+    def run(self, text: str) -> tuple[str, str]:
         """
-        Runs the full 2-pass humanization pipeline using Gemini.
+        Runs the full 2-pass humanization pipeline using Gemini:
+        Step 1: English -> Chinese (humanized translation)
+        Step 2: Chinese -> Japanese (humanized translation, carries Step 1 as history)
         """
         if not text or not text.strip():
-            return ""
+            return "", ""
 
-        first_pass = self.rewrite(text, temperature=0.9)
-        final_pass = self.polish(first_pass, temperature=0.7)
+        step1_out = self.translate_and_humanize(text, target_language="中文")
+        step2_out = self.translate_and_humanize(
+            step1_out,
+            target_language="日语",
+            history={"input": text, "output": step1_out},
+        )
 
-        return final_pass
+        return step1_out, step2_out
 
 
 def llm_rewrite(text: str, client=None, model: str = "gemini-2.5-flash", **kwargs) -> tuple[str, str]:
     """
     Execution bridge expected by src/standard/pipeline.py.
+    Step 1: English -> Chinese (humanized translation)
+    Step 2: Chinese -> Japanese (humanized translation, with history)
     """
     rewriter = LLMRewriter()
-    
-    step1_out = rewriter.rewrite(text)
-    step2_out = rewriter.polish(step1_out)
-    
-    return step1_out, step2_out
+    return rewriter.run(text)
 
 
 # Backward compatibility alias
