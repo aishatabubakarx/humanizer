@@ -15,12 +15,12 @@ Quick start:
 """
 
 from .pipeline import run_standard_pipeline
-from .llm_rewriter import deepseek_rewrite
-from .translators import google_translate, niutrans_translate
+from .llm_rewriter import llm_rewrite
+from .translators import google_translate, azure_translate
 
 __all__ = [
     "run_standard_pipeline",
-    "deepseek_rewrite",
+    "llm_rewrite",
     "google_translate",
-    "niutrans_translate",
+    "azure_translate",
 ]
