@@ -6,7 +6,7 @@ class LLMClient:
     def __init__(self, api_key: str = None, model: str = "gemini-2.5-flash"):
         """
         Initializes the client using Google's official GenAI SDK.
-        It uses the provided API key or checks system environment variables.
+        Reads GEMINI_API_KEY from environment if api_key is not passed explicitly.
         """
         self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
         self.model = model
@@ -21,17 +21,16 @@ class LLMClient:
         Generates text using Google Gemini.
         """
         if not self.client:
-            # Fallback check if environment variable was set after init
             env_key = os.environ.get("GEMINI_API_KEY")
             if env_key:
                 self.client = genai.Client(api_key=env_key)
             else:
-                raise ValueError("GEMINI_API_KEY is not set. Please set it in your environment or secrets.")
+                raise ValueError("GEMINI_API_KEY environment variable is not set.")
 
         if not system_instruction:
             system_instruction = (
-                "You are an expert editor. Rewrite the text to sound completely "
-                "natural and human, varying sentence structures and removing AI tropes."
+                "You are an expert human editor. Rewrite the text to sound completely "
+                "natural, varying sentence lengths and eliminating robotic AI phrasing."
             )
 
         config = types.GenerateContentConfig(
@@ -50,15 +49,16 @@ class LLMClient:
 
 def call_llm(prompt: str, temperature: float = 0.9, system_instruction: str = None) -> str:
     """
-    Standalone helper function for quick API calls.
+    Helper function for standalone LLM calls.
     """
     client = LLMClient()
     return client.generate(prompt=prompt, temperature=temperature, system_instruction=system_instruction)
 
 
-def resolve_llm_config():
+def resolve_llm_config(config=None):
     """
-    Bridge function expected by src/standard/pipeline.py
+    Bridge function expected by pipeline.py.
+    Accepts optional config dictionary argument.
     """
     client = LLMClient()
     return client, client.model
