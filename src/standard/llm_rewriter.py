@@ -44,7 +44,6 @@ class LLMRewriter:
 
 def llm_rewrite(text: str, client=None, model: str = "gemini-2.5-flash", **kwargs) -> tuple[str, str]:
     """
-    Bridge function expected by src/standard/pipeline.py.
     Executes the LLMRewriter passes and returns intermediate and final results.
     """
     rewriter = LLMRewriter()
