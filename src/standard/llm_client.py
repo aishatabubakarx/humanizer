@@ -1,4 +1,8 @@
 import os
+import warnings
+# Suppress the GenAI SDK warning globally
+warnings.filterwarnings("ignore", category=UserWarning)
+
 from google import genai
 from google.genai import types
 
@@ -35,7 +39,8 @@ class LLMClient:
 
         config = types.GenerateContentConfig(
             temperature=temperature,
-            system_instruction=system_instruction
+            system_instruction=system_instruction,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
         )
 
         response = self.client.models.generate_content(
