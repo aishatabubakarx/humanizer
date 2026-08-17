@@ -1,5 +1,6 @@
-"""Translation engines: Google Translate and Niutrans."""
+"""Translation engines: Google Translate and Azure Translator."""
 
+import os
 import httpx
 from deep_translator import GoogleTranslator
 
@@ -25,37 +26,52 @@ def google_translate(text: str, source: str, target: str) -> str:
     return translator.translate(text)
 
 
-def niutrans_translate(text: str, source: str, target: str, api_key: str) -> str:
-    """Translate text using Niutrans API.
+def azure_translate(text: str, source: str = "fi", target: str = "en", api_key: str = None) -> str:
+    """Translate text using Azure Translator API.
 
     Args:
         text: Text to translate.
         source: Source language code.
         target: Target language code.
-        api_key: Niutrans API key.
+        api_key: Optional Azure Translator API key. If not provided, reads AZURE_TRANSLATOR_KEY from env.
 
     Returns:
         Translated text.
     """
-    response = httpx.post(
-        "https://api.niutrans.com/NiuTransServer/translation",
-        json={
-            "from": source,
-            "to": target,
-            "apikey": api_key,
-            "src_text": text,
-        },
-        timeout=60,
-    )
+    if not text or not text.strip():
+        return ""
+
+    key = api_key or os.getenv("AZURE_TRANSLATOR_KEY")
+    region = os.getenv("AZURE_TRANSLATOR_REGION", "eastus")
+
+    if not key:
+        raise ValueError("AZURE_TRANSLATOR_KEY environment variable is not set.")
+
+    url = "https://api.cognitive.microsofttranslator.com/translate"
+    params = {
+        "api-version": "3.0",
+        "from": source,
+        "to": target
+    }
+    headers = {
+        "Ocp-Apim-Subscription-Key": key,
+        "Ocp-Apim-Subscription-Region": region,
+        "Content-Type": "application/json"
+    }
+    body = [{"text": text}]
+
+    response = httpx.post(url, params=params, headers=headers, json=body, timeout=60)
     response.raise_for_status()
     data = response.json()
 
-    if "tgt_text" in data:
-        return data["tgt_text"]
-    elif "error_msg" in data:
-        raise RuntimeError(f"Niutrans error: {data['error_msg']}")
+    if isinstance(data, list) and len(data) > 0 and "translations" in data[0]:
+        return data[0]["translations"][0]["text"]
     else:
-        raise RuntimeError(f"Unexpected Niutrans response: {data}")
+        raise RuntimeError(f"Unexpected Azure Translator response: {data}")
+
+
+# Backward-compatible alias
+niutrans_translate = azure_translate
 
 
 def _split_text(text: str, max_len: int = 4500) -> list[str]:
