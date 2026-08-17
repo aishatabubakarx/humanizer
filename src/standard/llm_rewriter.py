@@ -6,7 +6,7 @@ class LLMRewriter:
 
     def rewrite(self, text: str, temperature: float = 0.9) -> str:
         """
-        First pass: Restructure and break rigid AI writing patterns.
+        Pass 1: Restructure and break rigid AI writing patterns.
         """
         prompt = (
             "Rewrite the following text so it reads naturally, flows smoothly, "
@@ -17,7 +17,7 @@ class LLMRewriter:
 
     def polish(self, text: str, temperature: float = 0.7) -> str:
         """
-        Second pass: Fine-tune tone and sentence rhythm.
+        Pass 2: Fine-tune tone and sentence rhythm.
         """
         prompt = (
             "Polish this text as an experienced human editor. Improve the rhythm, "
@@ -28,15 +28,12 @@ class LLMRewriter:
 
     def run(self, text: str) -> str:
         """
-        Runs the full 2-step humanization pipeline using Gemini.
+        Runs the full 2-pass humanization pipeline using Gemini.
         """
         if not text or not text.strip():
             return ""
 
-        # Step 1: Restructure
         first_pass = self.rewrite(text, temperature=0.9)
-        
-        # Step 2: Polish
         final_pass = self.polish(first_pass, temperature=0.7)
 
         return final_pass
@@ -44,14 +41,15 @@ class LLMRewriter:
 
 def llm_rewrite(text: str, client=None, model: str = "gemini-2.5-flash", **kwargs) -> tuple[str, str]:
     """
-    Executes the LLMRewriter passes and returns intermediate and final results.
+    Execution bridge expected by src/standard/pipeline.py.
     """
     rewriter = LLMRewriter()
     
-    # Step 1: Restructure
     step1_out = rewriter.rewrite(text)
-    
-    # Step 2: Polish
     step2_out = rewriter.polish(step1_out)
     
     return step1_out, step2_out
+
+
+# Backward compatibility alias
+deepseek_rewrite = llm_rewrite
