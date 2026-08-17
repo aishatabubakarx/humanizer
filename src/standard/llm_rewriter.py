@@ -40,3 +40,19 @@ class LLMRewriter:
         final_pass = self.polish(first_pass, temperature=0.7)
 
         return final_pass
+
+
+def llm_rewrite(text: str, client=None, model: str = "gemini-2.5-flash", **kwargs) -> tuple[str, str]:
+    """
+    Bridge function expected by src/standard/pipeline.py.
+    Executes the LLMRewriter passes and returns intermediate and final results.
+    """
+    rewriter = LLMRewriter()
+    
+    # Step 1: Restructure
+    step1_out = rewriter.rewrite(text)
+    
+    # Step 2: Polish
+    step2_out = rewriter.polish(step1_out)
+    
+    return step1_out, step2_out
