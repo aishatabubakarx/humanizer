@@ -6,6 +6,9 @@ on:
       - 'input.txt' # Triggers only when input.txt is edited
   workflow_dispatch: # Allows manual triggering from the Actions tab
 
+permissions:
+  contents: write # Grants GitHub Actions permission to commit output.txt back to the repo
+
 jobs:
   humanize:
     runs-on: ubuntu-latest
@@ -21,13 +24,14 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install google-genai
+          pip install -r requirements.txt
 
       - name: Run Humanize Script
         env:
+          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          python humanize.py
+          python -m src.standard.pipeline --input "$(cat input.txt)" > output.txt
 
       - name: Commit and Push Output
         run: |
