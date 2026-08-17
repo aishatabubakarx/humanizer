@@ -1,0 +1,14 @@
+[llm]
+provider = "gemini"
+model = "gemini-2.5-flash"
+temperature_pass1 = 0.9
+temperature_pass2 = 0.7
+
+[translation]
+step3_source = "ja"
+step3_target = "fi"
+step4_source = "fi"
+step4_target = "en"
+
+[azure]
+region = "eastus"
