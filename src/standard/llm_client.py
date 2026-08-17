@@ -54,3 +54,11 @@ def call_llm(prompt: str, temperature: float = 0.9, system_instruction: str = No
     """
     client = LLMClient()
     return client.generate(prompt=prompt, temperature=temperature, system_instruction=system_instruction)
+
+
+def resolve_llm_config():
+    """
+    Bridge function expected by src/standard/pipeline.py
+    """
+    client = LLMClient()
+    return client, client.model
